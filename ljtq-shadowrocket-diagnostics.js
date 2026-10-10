@@ -33,7 +33,6 @@
         var member = /^https:\/\/ljwapi\.baichuan\.tech\/(?:VIP|User|Login)\//.test(url) || /^https:\/\/navi\.antforecast\.com\/AppTokenApi\/(?:Login|Token\/GetModel)\/?(?:\?|$)/.test(url);
         if (member) {
           var token = typeof $argument === "string" ? $argument.trim() : "";
-          if (!token && typeof $persistentStore !== "undefined") token = $persistentStore.read("ljtq_authorized_token") || "";
           function decodePayload(jwt) {
             var payload = jwt.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
             var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
