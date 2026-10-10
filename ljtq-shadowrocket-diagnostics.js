@@ -1,5 +1,6 @@
-/* v7: local membership display compatibility and read-only forecast diagnostics.
- * Forecasts, account identity, login tokens, and payment state are preserved.
+/* v0: original response compatibility plus weather diagnostics; not UI-verified.
+ * The original author's display-name and expiry substitutions are retained.
+ * Forecasts, account IDs, and login token strings are not rewritten.
  */
 (function () {
   "use strict";
@@ -9,8 +10,24 @@
     var body = typeof $response !== "undefined" ? $response.body : undefined;
     var path = url.replace(/^https:\/\/[^/]+/, "").split("?")[0];
     if (typeof body === "string") {
+      if (/^https:\/\/ljwapi\.baichuan\.tech\//.test(url)) {
+        // Same four substitutions as the referenced original, with whitespace
+        // support. This branch deliberately does not depend on Token arguments,
+        // local storage, JSON envelope shape, or the business-code field.
+        var compatible = body
+          .replace(/("isVIP"\s*:\s*)\w+/g, "$1true")
+          .replace(/"name"\s*:\s*"(?:\\.|[^"\\])*"/g, '"name":"彭于晏解锁"')
+          .replace(/("isDevice"\s*:\s*)\w+/g, "$1true")
+          .replace(/("expiresTime"\s*:\s*)\d+/g, function (_, prefix) { return prefix + "9999285284241"; });
+        if (/^\/(?:VIP|User|Login)\//.test(path)) {
+          compatible = compatible.replace(/("vipType"\s*:\s*)\d+/g, function (_, prefix) { return prefix + "1"; });
+        }
+        console.log("[LJTQ v0] original member response matched; display change=" + (compatible !== body));
+        $done({ body: compatible });
+        return;
+      }
       if (/^\/APPMap\//.test(path)) {
-        console.log("[LJTQ v7] page=" + path + " chars=" + body.length + " status=" + String($response.status || $response.statusCode || "unknown"));
+        console.log("[LJTQ v0] page=" + path + " chars=" + body.length + " status=" + String($response.status || $response.statusCode || "unknown"));
       } else {
         var value = JSON.parse(body);
         var member = /^https:\/\/ljwapi\.baichuan\.tech\/(?:VIP|User|Login)\//.test(url) || /^https:\/\/navi\.antforecast\.com\/AppTokenApi\/(?:Login|Token\/GetModel)\/?(?:\?|$)/.test(url);
@@ -54,7 +71,7 @@
             patchFields(value.Result || value.result, 0);
           }
           if (changes) output.body = JSON.stringify(value);
-          console.log("[LJTQ v7] member=" + path + " display-fields=" + changes);
+          console.log("[LJTQ v0] member=" + path + " display-fields=" + changes);
           $done(output);
           return;
         }
@@ -80,11 +97,11 @@
           if (Array.isArray(data.Product)) summary.products = data.Product.length;
           if (Array.isArray(data.maps)) summary.maps = data.maps.length;
         }
-        console.log("[LJTQ v7] " + JSON.stringify(summary));
+        console.log("[LJTQ v0] " + JSON.stringify(summary));
       }
     }
   } catch (error) {
-    console.log("[LJTQ v7] diagnostic parse skipped; response unchanged");
+    console.log("[LJTQ v0] diagnostic parse skipped; response unchanged");
   }
   $done(output);
 })();

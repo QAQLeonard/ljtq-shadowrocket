@@ -1,4 +1,4 @@
-# 莉景天气：小火箭个人授权配置 v7
+# 莉景天气：小火箭 v0（测试中，尚未完成平板验收）
 
 此模块保留原接口、原 JSON 格式和真实概率，不将光追 LTR/LIR 映射为概率，也不把缺失值替换为零。
 
@@ -12,7 +12,7 @@ https://raw.githubusercontent.com/QAQLeonard/ljtq-shadowrocket/main/ljtq-shadowr
 
 请求脚本覆盖已识别的天气 API：主页 ALLMenu、观星 StarIndex、Relative、朝霞/晚霞、EC/GFS、图片目录、彩虹 Rainbstsm、云海 SeaOfClouds、雾凇 Rime/rime，以及 NewAPI 极光和空间天气。历表 Ephemeris 和会员状态接口同样支持授权凭据。用户/登录请求仅将本地配置凭据交给持久存储供会员显示脚本读取，不改变这些请求或登录响应中的 Token，不改变 TokenDevice、URL、经纬度、vf、请求正文。
 
-v7 补上 v6 遗漏的主页会员显示兼容。参考用户提供的 2022 原脚本，处理已有的 isVIP、isDevice 等字段，并补充当前响应里的 vipType、Vipstate、Viptime；只在成功会员元数据响应且本地授权 Token 声明有效会员期限时处理，期限使用 VIPTime，不使用原脚本的超长假日期，不改用户名、账号身份、登录凭据、付款状态或 isLifelong。天气预测和图片目录正文始终原样保留。没有诊断回传或延时。模块不能保证 Token 永久有效，也没有证据确认固定 Token 的刷新机制。
+模块仍为 v0，先前的 v6/v7 标记撤回。原脚本能力按同一响应对照：ljwapi.baichuan.tech 全域响应中的 isVIP=true、isDevice=true、显示名“彭于晏解锁”、expiresTime=9999285284241；这四项本地显示处理不依赖 Token 参数，不依赖登录响应的 envelope 或业务成功代码。原脚本的超长到期时间只是客户端显示值，不代表服务器真实权限或 Token 有效期。navi 的会员元数据仍依据本地授权凭据处理，天气预测正文保持原样；登录 Token 与账号 ID 不修改。天气取数需要另行配置已获授权的 Token。
 
 2026-10-10 的固定坐标实测：旧 Token 的未来概率缺失、EC/GFS 空数组；只替换经用户确认获授权的 Token 后，晚霞概率为 12/7/5，EC 为 0/7/2，GFS 为 20/5/4。图层目录返回 11 类；EC/GFS 三天晚霞概率图各一张测试 PNG 共 6 张全部下载成功。这是服务器侧验证，不等于已验证手机页面显示正确。
 

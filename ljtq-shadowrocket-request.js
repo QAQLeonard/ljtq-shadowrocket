@@ -1,4 +1,4 @@
-/* v7: authorized weather API reads and local credential handoff.
+/* v0: authorized weather API reads and local credential handoff.
  * No endpoint migration, forecast fabrication, login overwrite, or refresh.
  */
 (function () {
@@ -25,12 +25,12 @@
       }
       headers.Token = token;
       output.headers = headers;
-      console.log("[LJTQ v7] authorized Token applied; URL/body/TokenDevice unchanged");
+      console.log("[LJTQ v0] authorized Token applied; URL/body/TokenDevice unchanged");
     } else if (allowed) {
-      console.log("[LJTQ v7] no valid local credential; unchanged");
+      console.log("[LJTQ v0] no valid local credential; unchanged");
     }
   } catch (error) {
-    console.log("[LJTQ v7] unsupported request; unchanged");
+    console.log("[LJTQ v0] unsupported request; unchanged");
   }
   $done(output);
 })();
