@@ -1,10 +1,16 @@
 #!name=莉景天气 v1
-#!desc=保留已确认可用的会员和天气处理；Token 一次保存，更新后自动读取本地配置。
+#!desc=本地配置页保存一次 Token，更新无需 Argument；保留已确认的会员与天气处理。
 #!author=QAQLeonard
+
+[Host]
+ljtq-config.invalid = 198.18.255.254
+
+[Rule]
+DOMAIN,ljtq-config.invalid,DIRECT
 
 [MITM]
 hostname = %APPEND% ljw.antforecast.com, ljwapi.baichuan.tech, navi.antforecast.com
 
 [Script]
-莉景天气授权请求 = type=http-request,pattern=^https://(?:ljw\.antforecast\.com/(?:ALLMenu|StarIndex|Relative|SunsetGlow|MorningGlow|Picture|Rainbstsm|SeaOfClouds|Rime|rime|NewAPI)/|ljwapi\.baichuan\.tech/(?:VIP/|User/|Login/|Ephemeris/GetEphemeris)|navi\.antforecast\.com/AppTokenApi/),requires-body=0,script-path=https://raw.githubusercontent.com/QAQLeonard/ljtq-shadowrocket/main/ljtq-shadowrocket-request.js?v=1,timeout=10
+莉景天气授权请求 = type=http-request,pattern=^https?://(?:ljtq-config\.invalid/|ljw\.antforecast\.com/(?:ALLMenu|StarIndex|Relative|SunsetGlow|MorningGlow|Picture|Rainbstsm|SeaOfClouds|Rime|rime|NewAPI)/|ljwapi\.baichuan\.tech/(?:VIP/|User/|Login/|Ephemeris/GetEphemeris)|navi\.antforecast\.com/AppTokenApi/),requires-body=1,script-path=https://raw.githubusercontent.com/QAQLeonard/ljtq-shadowrocket/main/ljtq-shadowrocket-request.js?v=1&setup=1,timeout=10
 莉景天气会员及预测诊断 = type=http-response,pattern=^https://(?:ljwapi\.baichuan\.tech/|navi\.antforecast\.com/AppTokenApi/|ljw\.antforecast\.com/(?:ALLMenu|StarIndex|Relative|SunsetGlow|MorningGlow|Picture|Rainbstsm|SeaOfClouds|Rime|rime|NewAPI|APPMap)/),requires-body=1,script-path=https://raw.githubusercontent.com/QAQLeonard/ljtq-shadowrocket/main/ljtq-shadowrocket-diagnostics.js?v=1,timeout=10
