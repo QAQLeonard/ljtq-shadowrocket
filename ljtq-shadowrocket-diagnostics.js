@@ -1,4 +1,4 @@
-/* v0: original response compatibility plus weather diagnostics; not UI-verified.
+/* v1: original response compatibility plus weather diagnostics; not UI-verified.
  * The original author's display-name and expiry substitutions are retained.
  * Forecasts, account IDs, and login token strings are not rewritten.
  */
@@ -22,12 +22,12 @@
         if (/^\/(?:VIP|User|Login)\//.test(path)) {
           compatible = compatible.replace(/("vipType"\s*:\s*)\d+/g, function (_, prefix) { return prefix + "1"; });
         }
-        console.log("[LJTQ v0] original member response matched; display change=" + (compatible !== body));
+        console.log("[LJTQ v1] original member response matched; display change=" + (compatible !== body));
         $done({ body: compatible });
         return;
       }
       if (/^\/APPMap\//.test(path)) {
-        console.log("[LJTQ v0] page=" + path + " chars=" + body.length + " status=" + String($response.status || $response.statusCode || "unknown"));
+        console.log("[LJTQ v1] page=" + path + " chars=" + body.length + " status=" + String($response.status || $response.statusCode || "unknown"));
       } else {
         var value = JSON.parse(body);
         var member = /^https:\/\/ljwapi\.baichuan\.tech\/(?:VIP|User|Login)\//.test(url) || /^https:\/\/navi\.antforecast\.com\/AppTokenApi\/(?:Login|Token\/GetModel)\/?(?:\?|$)/.test(url);
@@ -71,7 +71,7 @@
             patchFields(value.Result || value.result, 0);
           }
           if (changes) output.body = JSON.stringify(value);
-          console.log("[LJTQ v0] member=" + path + " display-fields=" + changes);
+          console.log("[LJTQ v1] member=" + path + " display-fields=" + changes);
           $done(output);
           return;
         }
@@ -97,11 +97,11 @@
           if (Array.isArray(data.Product)) summary.products = data.Product.length;
           if (Array.isArray(data.maps)) summary.maps = data.maps.length;
         }
-        console.log("[LJTQ v0] " + JSON.stringify(summary));
+        console.log("[LJTQ v1] " + JSON.stringify(summary));
       }
     }
   } catch (error) {
-    console.log("[LJTQ v0] diagnostic parse skipped; response unchanged");
+    console.log("[LJTQ v1] diagnostic parse skipped; response unchanged");
   }
   $done(output);
 })();
