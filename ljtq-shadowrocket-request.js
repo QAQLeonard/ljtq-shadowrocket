@@ -1,4 +1,4 @@
-/* v6: caller-authorized credential, local Script Argument only.
+/* v7: authorized weather API reads and local credential handoff.
  * No endpoint migration, forecast fabrication, login overwrite, or refresh.
  */
 (function () {
@@ -7,8 +7,14 @@
   try {
     var request = typeof $request === "undefined" ? null : $request;
     var token = typeof $argument === "string" ? $argument.trim() : "";
+    if (!token && typeof $persistentStore !== "undefined") token = $persistentStore.read("ljtq_authorized_token") || "";
     var url = request ? String(request.url || "") : "";
-    var allowed = /^https:\/\/(?:ljw\.antforecast\.com\/(?:(?:SunsetGlow|MorningGlow)\/(?:GetExtremumByLocation|GetNearest|GetECByLocation|GetGFSByLocation)|Picture\/(?:GetLocation|GetWebMercatorTiles)|NewAPI\/(?:(?:SunSetGlowAtmos|MorningGlowAtmos)\/GetECByLocation|Tiles\/GetSunGlowAtomsTiles))|ljwapi\.baichuan\.tech\/VIP\/GetState)\/?(?:\?|$)/.test(url);
+    var weather = /^https:\/\/ljw\.antforecast\.com\/(?:ALLMenu|StarIndex|Relative|SunsetGlow|MorningGlow|Picture|Rainbstsm|SeaOfClouds|Rime|rime|NewAPI)\//.test(url);
+    var metadata = /^https:\/\/ljwapi\.baichuan\.tech\/(?:VIP\/GetState|Ephemeris\/GetEphemeris)\/?(?:\?|$)/.test(url);
+    var allowed = metadata || (weather && request && String(request.method || "GET").toUpperCase() === "GET");
+    if (/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token) && typeof $persistentStore !== "undefined") {
+      try { $persistentStore.write(token, "ljtq_authorized_token"); } catch (storageError) { }
+    }
     if (allowed && /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token)) {
       var headers = {};
       var source = request.headers || {};
@@ -19,12 +25,12 @@
       }
       headers.Token = token;
       output.headers = headers;
-      console.log("[LJTQ v6] authorized Token applied; URL/body/TokenDevice unchanged");
+      console.log("[LJTQ v7] authorized Token applied; URL/body/TokenDevice unchanged");
     } else if (allowed) {
-      console.log("[LJTQ v6] no valid local Script Argument; unchanged");
+      console.log("[LJTQ v7] no valid local credential; unchanged");
     }
   } catch (error) {
-    console.log("[LJTQ v6] unsupported request; unchanged");
+    console.log("[LJTQ v7] unsupported request; unchanged");
   }
   $done(output);
 })();

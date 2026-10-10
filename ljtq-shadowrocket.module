@@ -1,10 +1,10 @@
-#!name=莉景天气个人授权配置 v6
-#!desc=保留原接口与预测正文；授权 Token 仅在本地 Script Argument 配置。含概率和图层诊断。
+#!name=莉景天气个人授权配置 v7
+#!desc=主页会员显示兼容；覆盖已识别的天气页面 API 和图片目录。授权 Token 仅在本地配置。
 #!author=QAQLeonard
 
 [MITM]
-hostname = %APPEND% ljw.antforecast.com, ljwapi.baichuan.tech
+hostname = %APPEND% ljw.antforecast.com, ljwapi.baichuan.tech, navi.antforecast.com
 
 [Script]
-莉景天气授权请求 = type=http-request,pattern=^https://(?:ljw\.antforecast\.com/(?:(?:SunsetGlow|MorningGlow)/(?:GetExtremumByLocation|GetNearest|GetECByLocation|GetGFSByLocation)|Picture/(?:GetLocation|GetWebMercatorTiles)|NewAPI/(?:(?:SunSetGlowAtmos|MorningGlowAtmos)/GetECByLocation|Tiles/GetSunGlowAtomsTiles))|ljwapi\.baichuan\.tech/VIP/GetState)/?(?:\?|$),requires-body=0,script-path=https://raw.githubusercontent.com/QAQLeonard/ljtq-shadowrocket/main/ljtq-shadowrocket-request.js?v=6,timeout=10
-莉景天气预测诊断 = type=http-response,pattern=^https://ljw\.antforecast\.com/(?:Picture/(?:GetLocation|GetWebMercatorTiles)|(?:SunsetGlow|MorningGlow)/(?:GetExtremumByLocation|GetNearest|GetECByLocation|GetGFSByLocation)|NewAPI/(?:(?:SunSetGlowAtmos|MorningGlowAtmos)/GetECByLocation|Tiles/GetSunGlowAtomsTiles)|APPMap/[^?]+\.html)/?(?:\?|$),requires-body=1,script-path=https://raw.githubusercontent.com/QAQLeonard/ljtq-shadowrocket/main/ljtq-shadowrocket-diagnostics.js?v=6,timeout=10
+莉景天气授权请求 = type=http-request,pattern=^https://(?:ljw\.antforecast\.com/(?:ALLMenu|StarIndex|Relative|SunsetGlow|MorningGlow|Picture|Rainbstsm|SeaOfClouds|Rime|rime|NewAPI)/|ljwapi\.baichuan\.tech/(?:VIP/|User/|Login/|Ephemeris/GetEphemeris)|navi\.antforecast\.com/AppTokenApi/),requires-body=0,script-path=https://raw.githubusercontent.com/QAQLeonard/ljtq-shadowrocket/main/ljtq-shadowrocket-request.js?v=7,timeout=10
+莉景天气会员及预测诊断 = type=http-response,pattern=^https://(?:ljwapi\.baichuan\.tech/|navi\.antforecast\.com/AppTokenApi/|ljw\.antforecast\.com/(?:ALLMenu|StarIndex|Relative|SunsetGlow|MorningGlow|Picture|Rainbstsm|SeaOfClouds|Rime|rime|NewAPI|APPMap)/),requires-body=1,script-path=https://raw.githubusercontent.com/QAQLeonard/ljtq-shadowrocket/main/ljtq-shadowrocket-diagnostics.js?v=7,timeout=10
